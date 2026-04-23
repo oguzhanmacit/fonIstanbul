@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role      String   // COMPANY | INVESTOR | COMMERCIAL_INVESTOR
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companyProfile   CompanyProfile?
+  investorProfile  InvestorProfile?
+  investments      Investment[]
+  invoices         Invoice[]
+  profitShares     ProfitShare[]
+  ownerships       Ownership[]
+}
+
+model CompanyProfile {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id])
+  companyName String
+  taxNumber   String
+  address     String
+  sellerId    String?
+  apiKey      String?
+  products    Product[]
+}
+
+model InvestorProfile {
+  id         String  @id @default(cuid())
+  userId     String  @unique
+  user       User    @relation(fields: [userId], references: [id])
+  idNumber   String?
+  bankIban   String?
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  companyId       String
+  company         CompanyProfile @relation(fields: [companyId], references: [id])
+  name            String
+  category        String
+  stockCount      Int
+  profitRate      Float
+  termDays        Int
+  salesLink       String?
+  marketplaceId   String?
+  targetAmount    Float
+  currentAmount   Float    @default(0)
+  status          String   @default("PENDING") // PENDING | OPEN | FUNDED | ACTIVE | COMPLETED
+  verifiedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  investments  Investment[]
+  ownerships   Ownership[]
+  salesData    SaleData[]
+  profitShares ProfitShare[]
+  invoices     Invoice[]
+}
+
+model Investment {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  type         String   // CASH | PRODUCT
+  amount       Float?
+  productCount Int?
+  status       String   @default("PENDING") // PENDING | CONFIRMED | REJECTED
+  createdAt    DateTime @default(now())
+  confirmedAt  DateTime?
+
+  ownership Ownership?
+}
+
+model Ownership {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  productId    String
+  product      Product   @relation(fields: [productId], references: [id])
+  investmentId String?   @unique
+  investment   Investment? @relation(fields: [investmentId], references: [id])
+  sharePercent Float
+  createdAt    DateTime  @default(now())
+}
+
+model Invoice {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  invoiceNo  String
+  fileName   String
+  status     String   @default("PENDING") // PENDING | VERIFIED | REJECTED
+  bonusRate  Float?
+  uploadedAt DateTime @default(now())
+  verifiedAt DateTime?
+}
+
+model SaleData {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  saleCount  Int
+  revenue    Float
+  profit     Float
+  recordedAt DateTime @default(now())
+}
+
+model ProfitShare {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  amount    Float
+  type      String   // CAPITAL | INVOICE_BONUS
+  status    String   @default("PENDING") // PENDING | PAID
+  createdAt DateTime @default(now())
+  paidAt    DateTime?
+}
