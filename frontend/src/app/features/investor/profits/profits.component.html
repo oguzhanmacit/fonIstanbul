@@ -1,0 +1,75 @@
+<div class="layout">
+  <app-navbar role="INVESTOR" />
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size:16px;font-weight:600">Kâr Takibi</h2>
+        <p style="font-size:12px;color:var(--gray-400)">Gerçek zamanlı kâr payı güncellemeleri</p>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="grid-stats" style="margin-bottom:24px">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#d1fae5">💰</div>
+          <div class="stat-label">Toplam Kâr Payı</div>
+          <div class="stat-value">{{ totalProfit | currency:'TRY':'symbol':'1.2-2':'tr' }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#dbeafe">✅</div>
+          <div class="stat-label">Ödenen</div>
+          <div class="stat-value">{{ paidProfit | currency:'TRY':'symbol':'1.2-2':'tr' }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fef3c7">⏳</div>
+          <div class="stat-label">Bekleyen</div>
+          <div class="stat-value">{{ pendingProfit | currency:'TRY':'symbol':'1.2-2':'tr' }}</div>
+        </div>
+      </div>
+
+      @if (profits.length === 0 && !loading) {
+        <div class="empty-state">
+          <div class="empty-icon">📈</div>
+          <h3>Henüz Kâr Payı Yok</h3>
+          <p>Yatırım yaptığınız ürünlerin satışı gerçekleştikçe kâr payları burada görünür.</p>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ÜRÜN</th>
+                <th>TÜR</th>
+                <th>TUTAR</th>
+                <th>DURUM</th>
+                <th>TARİH</th>
+                <th>ÖDEME TARİHİ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of profits; track p.id) {
+                <tr>
+                  <td><div style="font-weight:600;font-size:13px">{{ p.product?.name }}</div></td>
+                  <td>
+                    <span class="badge" [class.badge-info]="p.type==='CAPITAL'" [class.badge-success]="p.type==='INVOICE_BONUS'">
+                      {{ p.type === 'CAPITAL' ? 'Sermaye Kâr Payı' : 'Fatura Bonusu' }}
+                    </span>
+                  </td>
+                  <td>
+                    <span style="font-weight:700;color:var(--success)">+{{ p.amount | currency:'TRY':'symbol':'1.2-2':'tr' }}</span>
+                  </td>
+                  <td>
+                    <span class="badge" [class.badge-success]="p.status==='PAID'" [class.badge-warning]="p.status==='PENDING'">
+                      {{ p.status === 'PAID' ? 'Ödendi' : 'Bekliyor' }}
+                    </span>
+                  </td>
+                  <td>{{ p.createdAt ? (p.createdAt | date:'dd.MM.yyyy HH:mm') : '-' }}</td>
+                  <td>{{ p.paidAt ? (p.paidAt | date:'dd.MM.yyyy') : '-' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

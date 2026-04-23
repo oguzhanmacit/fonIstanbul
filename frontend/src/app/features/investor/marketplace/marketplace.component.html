@@ -1,0 +1,254 @@
+<div class="layout">
+  <app-navbar role="INVESTOR" />
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size:16px;font-weight:600">Pazar Yeri</h2>
+        <p style="font-size:12px;color:var(--gray-400)">Yatırıma açık ürünler</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input [(ngModel)]="search" (input)="filter()" placeholder="Ürün ara..."
+          style="padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;width:200px" />
+        <select [(ngModel)]="selectedCat" (change)="filter()"
+          style="padding:8px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px">
+          <option value="">Tüm Kategoriler</option>
+          @for (c of categories; track c) { <option [value]="c">{{ c }}</option> }
+        </select>
+      </div>
+    </div>
+
+    <div class="page-body">
+      @if (filtered.length === 0 && !loading) {
+        <div class="empty-state">
+          <div class="empty-icon">🛒</div>
+          <h3>Ürün Bulunamadı</h3>
+          <p>Arama kriterlerinize uygun yatırıma açık ürün yok.</p>
+        </div>
+      } @else {
+        <div class="nf-row">
+          @for (p of filtered; track p.id) {
+            <div class="nf-card-slot" [class.nf-active]="hoveredId === p.id"
+              (mouseenter)="onCardEnter(p.id)" (mouseleave)="onCardLeave()">
+
+              <!-- Static thumbnail -->
+              <div class="nf-thumb" [ngClass]="categoryClass(p.category)" (click)="openWatch(p)">
+                <div class="nf-thumb-emoji">{{ categoryEmoji(p.category) }}</div>
+                <div class="nf-thumb-overlay">
+                  <span class="nf-cat-badge">{{ p.category }}</span>
+                  @if (p.status === 'FUNDED') {
+                    <span class="nf-funded-ribbon">DOLDU</span>
+                  }
+                </div>
+                <div class="nf-play-btn">▶</div>
+                <div class="nf-thumb-title">{{ p.name }}</div>
+              </div>
+
+              <!-- Netflix popup — shows after 450ms hover -->
+              @if (hoveredId === p.id) {
+                <div class="nf-popup" (click)="$event.stopPropagation()">
+
+                  <!-- Animated "video preview" area -->
+                  <div class="nf-video-area" [ngClass]="categoryClass(p.category)">
+                    <div class="nf-video-emoji">{{ categoryEmoji(p.category) }}</div>
+                    <div class="nf-bars">
+                      <div class="bar b1"></div>
+                      <div class="bar b2"></div>
+                      <div class="bar b3"></div>
+                      <div class="bar b4"></div>
+                      <div class="bar b5"></div>
+                      <div class="bar b6"></div>
+                      <div class="bar b7"></div>
+                    </div>
+                    <div class="nf-profit-badge">%{{ p.profitRate }} kâr</div>
+                  </div>
+
+                  <!-- Info panel -->
+                  <div class="nf-info">
+                    <div class="nf-info-top">
+                      <span class="badge" [class.badge-success]="p.status==='OPEN'" [class.badge-gray]="p.status!=='OPEN'"
+                        style="font-size:10px;padding:2px 6px">
+                        {{ p.status === 'OPEN' ? 'Açık' : 'Doldu' }}
+                      </span>
+                      <span class="nf-term">{{ p.termDays }} gün vade</span>
+                    </div>
+                    <div class="nf-popup-title">{{ p.name }}</div>
+                    <div class="nf-company">{{ p.company?.companyName }} · {{ p.stockCount }} adet stok</div>
+                    <div class="nf-progress-wrap">
+                      <div class="nf-progress-bar" [style.width.%]="progress(p)"></div>
+                    </div>
+                    <div class="nf-progress-label">
+                      <span>{{ p.currentAmount | currency:'TRY':'symbol':'1.0-0':'tr' }}</span>
+                      <span>%{{ progress(p) }} dolu</span>
+                    </div>
+                    <div class="nf-btn-row">
+                      @if (p.status === 'OPEN') {
+                        <button class="btn btn-primary nf-invest-btn" (click)="openInvest(p)">
+                          ▶ Yatırım Yap
+                        </button>
+                      } @else {
+                        <button class="btn nf-invest-btn nf-done-btn" disabled>
+                          ✓ Tamamlandı
+                        </button>
+                      }
+                      <button class="btn nf-watch-btn" (click)="openWatch(p)">
+                        ⊕ İzle
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- WATCH MODAL (fullscreen video) -->
+@if (watchingProduct) {
+  <div class="watch-overlay" (click)="closeWatch()">
+    <div class="watch-modal" (click)="$event.stopPropagation()">
+
+      <!-- Close button -->
+      <button class="watch-close" (click)="closeWatch()">✕</button>
+
+      <!-- Full video screen -->
+      <div class="watch-video" [ngClass]="categoryClass(watchingProduct.category)">
+        <div class="watch-emoji">{{ categoryEmoji(watchingProduct.category) }}</div>
+
+        <!-- Animated bars — more bars, bigger -->
+        <div class="watch-bars">
+          @for (b of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]; track b) {
+            <div class="wbar" [style.animation-delay]="(b * 0.07) + 's'"
+              [style.animation-duration]="(0.55 + b * 0.04) + 's'"></div>
+          }
+        </div>
+
+        <!-- Floating data labels -->
+        <div class="watch-data-labels">
+          <div class="wdl wdl-1">
+            <span class="wdl-val" style="color:#E50914">%{{ watchingProduct.profitRate }}</span>
+            <span class="wdl-lbl">Kâr Oranı</span>
+          </div>
+          <div class="wdl wdl-2">
+            <span class="wdl-val">{{ watchingProduct.termDays }}</span>
+            <span class="wdl-lbl">Vade (gün)</span>
+          </div>
+          <div class="wdl wdl-3">
+            <span class="wdl-val">{{ watchingProduct.stockCount }}</span>
+            <span class="wdl-lbl">Stok Adedi</span>
+          </div>
+        </div>
+
+        <!-- Category label bottom-left -->
+        <div class="watch-cat-tag">{{ watchingProduct.category }}</div>
+
+        <!-- Profit badge bottom-right -->
+        <div class="watch-profit-badge">%{{ watchingProduct.profitRate }} kâr hedefi</div>
+
+        <!-- Scan-line effect overlay -->
+        <div class="watch-scanlines"></div>
+      </div>
+
+      <!-- Info panel -->
+      <div class="watch-info">
+        <div class="watch-info-top">
+          <span class="badge" [class.badge-success]="watchingProduct.status==='OPEN'"
+            [class.badge-gray]="watchingProduct.status!=='OPEN'">
+            {{ watchingProduct.status === 'OPEN' ? 'Yatırıma Açık' : 'Tamamlandı' }}
+          </span>
+          <span style="font-size:12px;color:var(--gray-400);margin-left:auto">
+            {{ watchingProduct.company?.companyName }}
+          </span>
+        </div>
+
+        <h2 class="watch-title">{{ watchingProduct.name }}</h2>
+
+        <div class="watch-stats">
+          <div class="ws-item">
+            <div class="ws-val" style="color:#E50914">%{{ watchingProduct.profitRate }}</div>
+            <div class="ws-lbl">Kâr Oranı</div>
+          </div>
+          <div class="ws-item">
+            <div class="ws-val">{{ watchingProduct.termDays }} gün</div>
+            <div class="ws-lbl">Vade</div>
+          </div>
+          <div class="ws-item">
+            <div class="ws-val">{{ watchingProduct.targetAmount | currency:'TRY':'symbol':'1.0-0':'tr' }}</div>
+            <div class="ws-lbl">Hedef Tutar</div>
+          </div>
+          <div class="ws-item">
+            <div class="ws-val">{{ watchingProduct.stockCount }}</div>
+            <div class="ws-lbl">Stok Adedi</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray-400);margin-bottom:6px">
+            <span>Doluluk Oranı</span>
+            <span style="font-weight:700;color:#fff">%{{ progress(watchingProduct) }}</span>
+          </div>
+          <div class="watch-progress-wrap">
+            <div class="watch-progress-bar" [style.width.%]="progress(watchingProduct)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray-500);margin-top:5px">
+            <span>{{ watchingProduct.currentAmount | currency:'TRY':'symbol':'1.0-0':'tr' }} toplandı</span>
+            <span>{{ watchingProduct.targetAmount | currency:'TRY':'symbol':'1.0-0':'tr' }} hedef</span>
+          </div>
+        </div>
+
+        <div class="watch-actions">
+          @if (watchingProduct.status === 'OPEN') {
+            <button class="btn btn-primary watch-invest-btn" (click)="openInvest(watchingProduct); closeWatch()">
+              ▶ Yatırım Yap
+            </button>
+          }
+          <button class="btn btn-outline watch-close-btn" (click)="closeWatch()">Kapat</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- INVEST MODAL -->
+@if (selectedProduct) {
+  <div class="modal-overlay" (click)="closeInvest()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Yatırım Yap</h2>
+        <p>{{ selectedProduct.name }}</p>
+      </div>
+      @if (investError) { <div class="alert alert-error">{{ investError }}</div> }
+      @if (investSuccess) { <div class="alert alert-success">{{ investSuccess }}</div> }
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;padding:16px;background:var(--gray-50);border-radius:10px">
+        <div><div style="font-size:12px;color:var(--gray-500)">Kâr Oranı</div><div style="font-size:18px;font-weight:700;color:var(--success)">%{{ selectedProduct.profitRate }}</div></div>
+        <div><div style="font-size:12px;color:var(--gray-500)">Vade</div><div style="font-size:18px;font-weight:700">{{ selectedProduct.termDays }} gün</div></div>
+        <div><div style="font-size:12px;color:var(--gray-500)">Hedef</div><div style="font-size:16px;font-weight:600">{{ selectedProduct.targetAmount | currency:'TRY':'symbol':'1.0-0':'tr' }}</div></div>
+        <div><div style="font-size:12px;color:var(--gray-500)">Kalan</div><div style="font-size:16px;font-weight:600">{{ (selectedProduct.targetAmount - selectedProduct.currentAmount) | currency:'TRY':'symbol':'1.0-0':'tr' }}</div></div>
+      </div>
+
+      <div class="form-group">
+        <label>Yatırım Tutarı (₺)</label>
+        <input type="text" inputmode="numeric" [value]="amountDisplay"
+          (input)="onAmountInput($event)" placeholder="Min: 100 ₺" autocomplete="off" />
+      </div>
+      @if (amount > 0) {
+        <div style="padding:12px;background:var(--primary-light);border-radius:8px;margin-bottom:16px;font-size:13px">
+          <strong>Tahmini Kâr Payı:</strong> {{ estimatedProfit | currency:'TRY':'symbol':'1.2-2':'tr' }}
+          (%{{ sharePercent | number:'1.1-1' }} pay)
+        </div>
+      }
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeInvest()">İptal</button>
+        <button class="btn btn-primary" (click)="invest()" [disabled]="investing || !!investSuccess">
+          @if (investing) { <span class="spinner"></span> } Yatırım Yap
+        </button>
+      </div>
+    </div>
+  </div>
+}

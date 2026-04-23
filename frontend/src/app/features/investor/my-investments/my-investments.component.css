@@ -1,0 +1,20 @@
+.inv-card {
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.09);
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.inv-card:hover { border-color: #0dcfcf; box-shadow: 0 4px 16px rgba(13,207,207,0.08); }
+.inv-card-left { flex: 1; }
+.inv-card-right { text-align: right; flex-shrink: 0; }
+.inv-amount { font-size: 24px; font-weight: 800; color: #1a1a1a; }
+
+/* ── Dark mode ── */
+:host-context([data-theme="dark"]) .inv-card { background: var(--surface-1); border-color: var(--border); }
+:host-context([data-theme="dark"]) .inv-card:hover { border-color: #0dcfcf; }
+:host-context([data-theme="dark"]) .inv-amount { color: var(--gray-900); }

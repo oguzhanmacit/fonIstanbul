@@ -1,0 +1,89 @@
+<div class="layout">
+  <app-navbar role="INVESTOR" />
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size:16px;font-weight:600">Yatırımlarım</h2>
+        <p style="font-size:12px;color:var(--gray-400)">Aktif ve geçmiş yatırımlarınız</p>
+      </div>
+    </div>
+    <div class="page-body">
+      @if (investments.length === 0 && !loading) {
+        <div class="empty-state">
+          <div class="empty-icon">💼</div>
+          <h3>Henüz Yatırım Yok</h3>
+          <p>Pazar yerinden bir ürüne yatırım yaparak başlayın.</p>
+        </div>
+      } @else {
+        <div style="display:flex;flex-direction:column;gap:16px">
+          @for (inv of investments; track inv.id) {
+            <div class="inv-card">
+              <div class="inv-card-left">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                  <span class="badge badge-info">Nakit Yatırım</span>
+                  <span class="badge" [class.badge-success]="inv.status==='CONFIRMED'" [class.badge-warning]="inv.status==='PENDING'" [class.badge-danger]="inv.status==='REJECTED'">
+                    {{ statusLabel(inv.status) }}
+                  </span>
+                </div>
+                <h3 style="font-size:15px;font-weight:700;margin-bottom:4px">{{ inv.product?.name }}</h3>
+                <p style="font-size:12px;color:var(--gray-500)">{{ inv.product?.category }} • {{ inv.createdAt | date:'dd.MM.yyyy' }}</p>
+                @if (inv.ownership) {
+                  <div style="margin-top:8px;padding:8px 12px;background:var(--primary-light);border-radius:8px;display:inline-flex;align-items:center;gap:8px">
+                    <span style="font-size:12px;color:var(--primary)">Sahiplik Payı:</span>
+                    <span style="font-weight:700;color:var(--primary)">%{{ inv.ownership.sharePercent | number:'1.1-2' }}</span>
+                  </div>
+                }
+              </div>
+              <div class="inv-card-right">
+                <div class="inv-amount">{{ inv.amount | currency:'TRY':'symbol':'1.0-0':'tr' }}</div>
+                <div style="font-size:12px;color:var(--gray-400)">Yatırım Tutarı</div>
+                @if (inv.product?.profitRate) {
+                  <div style="margin-top:8px;font-size:13px">
+                    <span style="color:var(--success);font-weight:600">+%{{ inv.product!.profitRate }}</span>
+                    <span style="color:var(--gray-400)"> kâr oranı</span>
+                  </div>
+                }
+                @if (inv.status === 'CONFIRMED' && inv.product) {
+                  <button class="btn btn-outline btn-sm" style="margin-top:12px" (click)="openInvoice(inv)">
+                    📄 E-Fatura Yükle
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- INVOICE MODAL -->
+@if (selectedInv) {
+  <div class="modal-overlay" (click)="closeInvoice()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>E-Fatura Yükle</h2>
+        <p>{{ selectedInv.product?.name }}</p>
+      </div>
+      @if (invoiceError) { <div class="alert alert-error">{{ invoiceError }}</div> }
+      @if (invoiceSuccess) { <div class="alert alert-success">{{ invoiceSuccess }}</div> }
+      <div class="form-group">
+        <label>Fatura Numarası *</label>
+        <input [(ngModel)]="invoiceNo" placeholder="2024/001234" />
+      </div>
+      <div class="form-group">
+        <label>Fatura Dosyası * (PDF, XML, JPG, PNG)</label>
+        <input type="file" (change)="onFileChange($event)" accept=".pdf,.xml,.jpg,.png" />
+      </div>
+      <div style="padding:12px;background:#fef3c7;border-radius:8px;font-size:13px;color:#92400e;margin-bottom:8px">
+        E-fatura doğrulandıktan sonra kâr payı oranınız <strong>+%2</strong> artacaktır.
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeInvoice()">İptal</button>
+        <button class="btn btn-primary" (click)="uploadInvoice()" [disabled]="uploading || !!invoiceSuccess">
+          @if (uploading) { <span class="spinner"></span> } Yükle
+        </button>
+      </div>
+    </div>
+  </div>
+}

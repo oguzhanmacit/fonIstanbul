@@ -1,0 +1,134 @@
+<div class="layout">
+  <app-navbar role="INVESTOR" />
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600">Genel Bakış</h2>
+        <p style="font-size: 12px; color: var(--gray-400)">{{ today }}</p>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center">
+        <span style="font-size: 13px; color: var(--gray-500)"
+          >Hoş geldiniz, {{ auth.currentUser()?.name }}</span
+        >
+        <a routerLink="/yatirimci/pazar" class="btn btn-primary btn-sm"
+          >Yatırım Yap</a
+        >
+      </div>
+    </div>
+    <div class="page-body">
+      @if (stats) {
+        <div class="grid-stats">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #dbeafe">💼</div>
+            <div class="stat-label">Toplam Yatırım</div>
+            <div class="stat-value">{{ stats.totalInvestments }}</div>
+            <div class="stat-sub">
+              {{ stats.activeInvestments }} aktif yatırım
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #fef3c7">💰</div>
+            <div class="stat-label">Yatırılan Tutar</div>
+            <div class="stat-value">
+              {{
+                stats.totalInvested
+                  | currency: "TRY" : "symbol" : "1.0-0" : "tr"
+              }}
+            </div>
+            <div class="stat-sub">Onaylanmış nakit yatırımlar</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #d1fae5">📈</div>
+            <div class="stat-label">Kazanılan Kâr</div>
+            <div class="stat-value">
+              {{
+                stats.totalProfitEarned
+                  | currency: "TRY" : "symbol" : "1.0-0" : "tr"
+              }}
+            </div>
+            <div class="stat-sub">Toplam kâr payı</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #ede9fe">✅</div>
+            <div class="stat-label">Ödenen Kâr</div>
+            <div class="stat-value">
+              {{
+                stats.paidProfit | currency: "TRY" : "symbol" : "1.0-0" : "tr"
+              }}
+            </div>
+            <div class="stat-sub">Hesabınıza aktarılan</div>
+          </div>
+        </div>
+      }
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px">
+        <div class="card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 20px;
+            "
+          >
+            <h3 style="font-weight: 600">Hızlı İşlemler</h3>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <a routerLink="/yatirimci/pazar" class="quick-action">
+              <span>🛒</span>
+              <div>
+                <strong>Pazar Yerini Gez</strong
+                ><small>Yatırıma açık ürünleri incele ve ortak ol</small>
+              </div>
+              <span class="qa-arrow">→</span>
+            </a>
+            <a routerLink="/yatirimci/yatirimlarim" class="quick-action">
+              <span>💼</span>
+              <div>
+                <strong>Yatırımlarım</strong
+                ><small>Aktif yatırımlarınızı ve kâr paylarını görün</small>
+              </div>
+              <span class="qa-arrow">→</span>
+            </a>
+            <a routerLink="/yatirimci/karlarim" class="quick-action">
+              <span>💰</span>
+              <div>
+                <strong>Kâr Takibi</strong
+                ><small>Gerçek zamanlı kâr payı güncellemeleri</small>
+              </div>
+              <span class="qa-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-weight: 600; margin-bottom: 16px">Bilgilendirme</h3>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+              font-size: 13px;
+              color: var(--gray-600);
+            "
+          >
+            <div class="info-item">
+              <strong>Nakit Yatırım</strong>
+              <p>
+                Ürün sahipliğinin bir kısmını nakit karşılığı satın alın. Satış
+                oranında kâr payı alırsınız.
+              </p>
+            </div>
+            <div class="info-item">
+              <strong>E-Fatura ile Katkı</strong>
+              <p>
+                Satışa katkı sağladığınızı e-fatura ile belgeleyin, kâr payı
+                oranınız artar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
