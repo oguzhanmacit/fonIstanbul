@@ -1,0 +1,36 @@
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">FI</div>
+    <div class="logo-text">
+      <span class="logo-title">FonIstanbul</span>
+      <span class="logo-sub">{{ roleLabel }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (item of navItems; track item.path) {
+      <a [routerLink]="item.path" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">{{ userInitial }}</div>
+      <div class="user-details">
+        <div class="user-name">{{ auth.currentUser()?.name }}</div>
+        <div class="user-email">{{ auth.currentUser()?.email }}</div>
+      </div>
+    </div>
+    <div class="footer-actions">
+      <button class="theme-btn" (click)="theme.toggle()" [title]="theme.isDark() ? 'Açık mod' : 'Koyu mod'">
+        {{ theme.isDark() ? '☀️' : '🌙' }}
+        <span>{{ theme.isDark() ? 'Açık Mod' : 'Koyu Mod' }}</span>
+      </button>
+      <button class="logout-btn" (click)="auth.logout()">Çıkış Yap</button>
+    </div>
+  </div>
+</div>
