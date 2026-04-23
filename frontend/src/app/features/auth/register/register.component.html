@@ -1,0 +1,89 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="brand-icon">FI</div>
+      <span>FonIstanbul</span>
+    </div>
+    <h2>Ortaklık<br>Platformuna Katıl</h2>
+    <p>İki farklı kullanıcı tipiyle platforma dahil ol ve adil kâr paylaşımından yararlan.</p>
+    <div class="role-cards">
+      <div class="role-card" [class.active]="role==='COMPANY'" (click)="role='COMPANY'">
+        <span>🏢</span>
+        <div><strong>Ticari Firma</strong><small>Ürün sahipliği devri</small></div>
+      </div>
+      <div class="role-card" [class.active]="role==='INVESTOR'" (click)="role='INVESTOR'">
+        <span>👤</span>
+        <div><strong>Bireysel Yatırımcı</strong><small>Nakit yatırım</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <h1>Kayıt Ol</h1>
+      <p class="auth-sub">Ücretsiz hesap oluşturun</p>
+
+      @if (error) {
+        <div class="alert alert-error">{{ error }}</div>
+      }
+
+      <form (ngSubmit)="onRegister()">
+        <div class="form-group">
+          <label>Ad Soyad</label>
+          <input type="text" [(ngModel)]="name" name="name" required placeholder="Adınız Soyadınız" />
+        </div>
+        <div class="form-group">
+          <label>E-Posta</label>
+          <input type="email" [(ngModel)]="email" name="email" required placeholder="ornek@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Telefon</label>
+          <input type="tel" [(ngModel)]="phone" name="phone" placeholder="05XX XXX XX XX" />
+        </div>
+        <div class="form-group">
+          <label>Şifre</label>
+          <input type="password" [(ngModel)]="password" name="password" required placeholder="En az 8 karakter" minlength="6" />
+        </div>
+
+        @if (role === 'COMPANY') {
+          <div class="form-group">
+            <label>Firma Adı</label>
+            <input type="text" [(ngModel)]="companyName" name="companyName" required placeholder="Firma Adı A.Ş." />
+          </div>
+          <div class="form-group">
+            <label>Vergi Numarası</label>
+            <input type="text" [(ngModel)]="taxNumber" name="taxNumber" required placeholder="1234567890" />
+          </div>
+          <div class="form-group">
+            <label>Adres</label>
+            <input type="text" [(ngModel)]="address" name="address" placeholder="İl, İlçe" />
+          </div>
+        }
+
+        @if (role === 'INVESTOR') {
+          <div class="form-group">
+            <label>TC Kimlik No</label>
+            <input type="text" [(ngModel)]="idNumber" name="idNumber" placeholder="12345678901" maxlength="11" />
+          </div>
+          <div class="form-group">
+            <label>IBAN (Ödeme için)</label>
+            <input type="text" [(ngModel)]="bankIban" name="bankIban" placeholder="TR12 3456 7890 1234 5678 9012 34" />
+          </div>
+        }
+
+        <div class="form-group">
+          <label>Kullanıcı Tipi</label>
+          <select [(ngModel)]="role" name="role">
+            <option value="INVESTOR">Bireysel Yatırımcı</option>
+            <option value="COMPANY">Ticari Firma</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" [disabled]="loading">
+          @if (loading) { <span class="spinner"></span> } Hesap Oluştur
+        </button>
+      </form>
+
+      <p class="auth-switch">Zaten hesabınız var mı? <a routerLink="/giris">Giriş Yapın</a></p>
+    </div>
+  </div>
+</div>

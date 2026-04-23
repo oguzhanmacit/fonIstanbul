@@ -1,0 +1,55 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="brand-icon">FI</div>
+      <span>FonIstanbul</span>
+    </div>
+    <h2>E-Ticarette<br>Akıllı Ortaklık</h2>
+    <p>Doğrulanmış ürünlere yatırım yap, gerçek zamanlı kâr takibi yap.</p>
+    <div class="auth-features">
+      <div class="af-item"><span class="af-check">✓</span> Katılım finans ilkelerine uygun</div>
+      <div class="af-item"><span class="af-check">✓</span> Gerçek zamanlı satış izleme</div>
+      <div class="af-item"><span class="af-check">✓</span> Güvenli e-fatura doğrulama</div>
+      <div class="af-item"><span class="af-check">✓</span> Otomatik kâr payı dağıtımı</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="form-logo">
+        <div class="brand-icon">FI</div>
+        <span>FonIstanbul</span>
+      </div>
+      <h1>Giriş Yap</h1>
+      <p class="auth-sub">Hesabınıza giriş yapın</p>
+
+      @if (error) {
+        <div class="alert alert-error">{{ error }}</div>
+      }
+
+      <form (ngSubmit)="onLogin()" #f="ngForm">
+        <div class="form-group">
+          <label>E-Posta</label>
+          <input type="email" [(ngModel)]="email" name="email" required placeholder="ornek@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Şifre</label>
+          <input type="password" [(ngModel)]="password" name="password" required placeholder="••••••••" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg" [disabled]="loading">
+          @if (loading) { <span class="spinner"></span> } Giriş Yap
+        </button>
+      </form>
+
+      <div class="demo-section">
+        <div class="demo-label">Demo Hesaplar</div>
+        <div class="demo-accounts">
+          <button class="demo-btn" (click)="fillDemo('firma@demo.com')">🏢 Firma</button>
+          <button class="demo-btn" (click)="fillDemo('yatirimci@demo.com')">👤 Yatırımcı</button>
+        </div>
+        <div class="demo-pass">Tüm demo şifresi: <code>demo1234</code></div>
+      </div>
+
+      <p class="auth-switch">Hesabınız yok mu? <a routerLink="/kayit">Kayıt Olun</a></p>
+    </div>
+  </div>
+</div>

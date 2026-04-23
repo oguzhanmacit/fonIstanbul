@@ -1,0 +1,211 @@
+<div class="landing">
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="brand-icon">FI</div>
+        <span class="brand-name">FonIstanbul</span>
+      </div>
+      <div class="nav-links">
+        <a href="#nasil-calisir">Nasıl Çalışır?</a>
+        <a href="#avantajlar">Avantajlar</a>
+        @if (auth.isLoggedIn()) {
+          <a routerLink="/panel" class="btn btn-primary btn-sm">Panele Git</a>
+        } @else {
+          <a routerLink="/giris" class="btn btn-outline btn-sm">Giriş Yap</a>
+          <a routerLink="/kayit" class="btn btn-primary btn-sm">Ücretsiz Başla</a>
+        }
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">🇹🇷 Türkiye'nin Yatırım Platformu</div>
+      <h1>E-Ticarette<br><span class="highlight">Akıllı Ortaklık</span></h1>
+      <p>Doğrulanmış e-ticaret ürünlerine ortak ol, gerçek zamanlı satış verilerini izle, kâr payını şeffaf biçimde al. Faiz yok, belirsizlik yok.</p>
+      <div class="hero-actions">
+        <a routerLink="/kayit" class="btn btn-primary btn-lg">Hemen Başla</a>
+        <a href="#nasil-calisir" class="btn btn-ghost btn-lg">▶ Nasıl Çalışır?</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hs-val">%15+</div><div class="hs-lbl">Ortalama Kâr Payı</div></div>
+        <div class="hs-divider"></div>
+        <div class="hero-stat"><div class="hs-val">Anlık</div><div class="hs-lbl">Satış Takibi</div></div>
+        <div class="hs-divider"></div>
+        <div class="hero-stat"><div class="hs-val">%100</div><div class="hs-lbl">Şeffaf Sistem</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="dashboard-preview">
+        <div class="dp-header">
+          <span class="dp-dot red"></span>
+          <span class="dp-dot yellow"></span>
+          <span class="dp-dot green"></span>
+          <span class="dp-title">FonIstanbul — Canlı Dashboard</span>
+        </div>
+        <div class="dp-stats">
+          <div class="dp-stat">
+            <div class="dp-stat-val">₺48,200</div>
+            <div class="dp-stat-lbl">Toplam Yatırım</div>
+          </div>
+          <div class="dp-stat accent">
+            <div class="dp-stat-val">₺6,150</div>
+            <div class="dp-stat-lbl">Kazanılan Kâr</div>
+          </div>
+        </div>
+        <div class="dp-bar-item">
+          <div class="dp-bar-info"><span>Samsung Galaxy S24</span><span class="dp-pct">%87</span></div>
+          <div class="dp-bar-track"><div class="dp-bar-fill" style="width:87%"></div></div>
+        </div>
+        <div class="dp-bar-item">
+          <div class="dp-bar-info"><span>Nike Air Max 2024</span><span class="dp-pct">%40</span></div>
+          <div class="dp-bar-track"><div class="dp-bar-fill" style="width:40%"></div></div>
+        </div>
+        <div class="dp-feed">
+          <div class="dp-feed-item">✅ Yeni satış: +₺1,200 kâr payı</div>
+          <div class="dp-feed-item">📄 E-fatura doğrulandı: +%2 pay</div>
+          <div class="dp-feed-item">💸 Ödeme aktarıldı: ₺3,400</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="nasil-calisir" class="section">
+    <div class="section-inner">
+      <div class="section-label">Süreç</div>
+      <h2 class="section-title">Nasıl Çalışır?</h2>
+      <p class="section-sub">Üç adımda e-ticaret ortaklığına başla</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-icon">🏪</div>
+          <h3>Ürün Seç</h3>
+          <p>Doğrulanmış, stokta mevcut ürünleri incele. Kâr oranı, vade ve kategori bilgilerine bak.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-icon">💰</div>
+          <h3>Yatırım Yap</h3>
+          <p>Nakit ile yatırım yap. E-fatura yükleyerek kâr payını artır. Sahiplik devri anında oluşur.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-icon">📈</div>
+          <h3>Kâr Al</h3>
+          <p>Satışlar gerçekleştikçe kâr payın anlık güncellenir. Vade sonunda ödeme hesabına aktarılır.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVANTAGES -->
+  <section id="avantajlar" class="section section-alt">
+    <div class="section-inner">
+      <div class="section-label">Neden FonIstanbul</div>
+      <h2 class="section-title">Geleneksel Finans'tan<br>Farkımız</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Tam Şeffaflık</h3>
+          <p>Pazar yeri API entegrasyonu ile stok, satış ve kâr verileri gerçek zamanlı görüntülenir.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏦</div>
+          <h3>Katılım Finans</h3>
+          <p>Faiz içermeyen, kâr-zarar ortaklığına dayalı yapı. Mudarebe prensipleriyle uyumlu model.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h3>E-Fatura ile Katkı</h3>
+          <p>Satışa katkını e-fatura ile belgele, kâr payı oranın otomatik olarak artar.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Anlık İzleme</h3>
+          <p>Ürünün satış adedi, stok durumu ve kâr oranını canlı takip et.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Düşük Risk</h3>
+          <p>Fiziki varlığı kanıtlanmış, pazar yerinde satışa hazır ürünler üzerinden yatırım.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤝</div>
+          <h3>Adil Paylaşım</h3>
+          <p>Kâr, yatırımcı katkısı ve e-fatura doğrulamalarına göre algoritmik olarak hesaplanır.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USER TYPES -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label">Kullanıcılar</div>
+      <h2 class="section-title">Kimler Kullanır?</h2>
+      <div class="user-types">
+        <div class="user-type">
+          <div class="ut-icon">🏢</div>
+          <h3>Ticari Firmalar</h3>
+          <p>E-ticaret pazar yerlerinde satış yapan firmalar, ürün sahipliğini yatırımcılara devrederek sermaye bulur.</p>
+          <a routerLink="/kayit" class="btn btn-outline" style="margin-top:20px">Firma Olarak Kayıt →</a>
+        </div>
+        <div class="user-type featured">
+          <div class="ut-badge">En Popüler</div>
+          <div class="ut-icon">👤</div>
+          <h3>Bireysel Yatırımcılar</h3>
+          <p>Birikimlerini değerlendirmek isteyen bireyler, nakit yatırımla e-ticaret ürünlerine ortak olur.</p>
+          <a routerLink="/kayit" class="btn btn-primary" style="margin-top:20px">Yatırımcı Olarak Kayıt →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="section-inner" style="text-align:center">
+      <h2>Bugün Başlayın</h2>
+      <p>Ücretsiz hesap oluşturun, yatırım fırsatlarını inceleyin</p>
+      <div class="cta-actions">
+        <a routerLink="/kayit" class="btn btn-primary btn-lg">Ücretsiz Kayıt Ol</a>
+        <a routerLink="/giris" class="btn btn-outline btn-lg">Giriş Yap</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="section-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <div class="brand-icon">FI</div>
+            <span>FonIstanbul</span>
+          </div>
+          <p class="footer-desc">E-ticarette faizsiz, şeffaf ve adil kâr-zarar ortaklığı platformu.</p>
+        </div>
+        <div>
+          <h4>Platform</h4>
+          <a href="#nasil-calisir">Nasıl Çalışır?</a>
+          <a href="#avantajlar">Avantajlar</a>
+          <a routerLink="/kayit">Kayıt Ol</a>
+        </div>
+        <div>
+          <h4>Hukuki</h4>
+          <a href="#">Kullanım Koşulları</a>
+          <a href="#">Gizlilik Politikası</a>
+          <a href="#">KVKK</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 FonIstanbul. Tüm hakları saklıdır.</span>
+      </div>
+    </div>
+  </footer>
+</div>
