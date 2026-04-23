@@ -1,0 +1,80 @@
+<div class="layout">
+  <app-navbar role="COMPANY" />
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size:16px;font-weight:600">Yatırımlar</h2>
+        <p style="font-size:12px;color:var(--gray-400)">Ürünlerinize gelen yatırım talepleri</p>
+      </div>
+    </div>
+    <div class="page-body">
+      @if (investments.length === 0 && !loading) {
+        <div class="empty-state">
+          <div class="empty-icon">💼</div>
+          <h3>Henüz Yatırım Yok</h3>
+          <p>Ürünlerinizi yatırıma açtıktan sonra burada görüntülenecek.</p>
+        </div>
+      } @else {
+        @if (pending.length > 0) {
+          <div style="margin-bottom:24px">
+            <h3 style="font-size:15px;font-weight:600;margin-bottom:12px">Onay Bekleyenler ({{ pending.length }})</h3>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>YATIRIMCI</th><th>ÜRÜN</th><th>TİP</th><th>MİKTAR</th><th>TARİH</th><th>İŞLEM</th></tr></thead>
+                <tbody>
+                  @for (inv of pending; track inv.id) {
+                    <tr>
+                      <td>
+                        <div style="font-weight:600;font-size:13px">{{ inv.user?.name }}</div>
+                        <div style="font-size:11px;color:var(--gray-400)">{{ inv.user?.email }}</div>
+                      </td>
+                      <td>{{ inv.product?.name }}</td>
+                      <td>
+                        <span class="badge badge-info">Nakit</span>
+                      </td>
+                      <td>{{ inv.amount | currency:'TRY':'symbol':'1.0-0':'tr' }}</td>
+                      <td>{{ inv.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+                      <td>
+                        <button class="btn btn-success btn-sm" (click)="confirm(inv.id)" [disabled]="confirming===inv.id">
+                          {{ confirming===inv.id ? '...' : 'Onayla' }}
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:12px">Tüm Yatırımlar</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>YATIRIMCI</th><th>ÜRÜN</th><th>TİP</th><th>MİKTAR</th><th>DURUM</th><th>TARİH</th></tr></thead>
+            <tbody>
+              @for (inv of investments; track inv.id) {
+                <tr>
+                  <td>
+                    <div style="font-weight:600;font-size:13px">{{ inv.user?.name }}</div>
+                    <div style="font-size:11px;color:var(--gray-400)">{{ inv.user?.email }}</div>
+                  </td>
+                  <td>{{ inv.product?.name }}</td>
+                  <td>
+                    <span class="badge badge-info">Nakit</span>
+                  </td>
+                  <td>{{ inv.amount | currency:'TRY':'symbol':'1.0-0':'tr' }}</td>
+                  <td>
+                    <span class="badge" [class.badge-success]="inv.status==='CONFIRMED'" [class.badge-warning]="inv.status==='PENDING'" [class.badge-danger]="inv.status==='REJECTED'">
+                      {{ statusLabel(inv.status) }}
+                    </span>
+                  </td>
+                  <td>{{ inv.createdAt | date:'dd.MM.yyyy' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

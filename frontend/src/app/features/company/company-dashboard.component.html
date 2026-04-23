@@ -1,0 +1,79 @@
+<div class="layout">
+  <app-navbar role="COMPANY" />
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size:16px;font-weight:600">Genel Bakış</h2>
+        <p style="font-size:12px;color:var(--gray-400)">{{ today }}</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span style="font-size:13px;color:var(--gray-500)">Hoş geldiniz, {{ auth.currentUser()?.companyProfile?.companyName || auth.currentUser()?.name }}</span>
+        <a routerLink="/firma/urunler" class="btn btn-primary btn-sm">+ Ürün Ekle</a>
+      </div>
+    </div>
+    <div class="page-body">
+      @if (stats) {
+        <div class="grid-stats">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#dbeafe">📦</div>
+            <div class="stat-label">Toplam Ürün</div>
+            <div class="stat-value">{{ stats.totalProducts }}</div>
+            <div class="stat-sub">{{ stats.openProducts }} tanesi yatırıma açık</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#d1fae5">💼</div>
+            <div class="stat-label">Toplam Yatırım</div>
+            <div class="stat-value">{{ stats.totalInvestments }}</div>
+            <div class="stat-sub">{{ stats.pendingInvestments }} onay bekliyor</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#fef3c7">💰</div>
+            <div class="stat-label">Toplam Yatırım Tutarı</div>
+            <div class="stat-value">{{ stats.totalInvestmentAmount | currency:'TRY':'symbol':'1.0-0':'tr' }}</div>
+            <div class="stat-sub">Onaylanmış yatırımlar</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#ede9fe">📈</div>
+            <div class="stat-label">Toplam Gelir</div>
+            <div class="stat-value">{{ stats.totalRevenue | currency:'TRY':'symbol':'1.0-0':'tr' }}</div>
+            <div class="stat-sub">Kâr: {{ stats.totalProfit | currency:'TRY':'symbol':'1.0-0':'tr' }}</div>
+          </div>
+        </div>
+      } @else {
+        <div class="grid-stats">
+          @for (i of [1,2,3,4]; track i) {
+            <div class="stat-card" style="height:120px;background:var(--gray-100);animation:pulse 1.5s infinite"></div>
+          }
+        </div>
+      }
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3 style="font-weight:600">Hızlı İşlemler</h3>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <a routerLink="/firma/urunler" class="quick-action">
+              <span>📦</span>
+              <div><strong>Ürün Ekle / Yönet</strong><small>Yeni ürün ekle veya mevcutları düzenle</small></div>
+              <span class="qa-arrow">→</span>
+            </a>
+            <a routerLink="/firma/yatirimlar" class="quick-action">
+              <span>💼</span>
+              <div><strong>Yatırımları Görüntüle</strong><small>Gelen yatırım taleplerini yönet</small></div>
+              <span class="qa-arrow">→</span>
+            </a>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-weight:600;margin-bottom:16px">Nasıl Çalışır?</h3>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="how-step"><span class="step-badge">1</span><span>Ürün profilinizi oluşturun ve pazar yeri doğrulamasını başlatın.</span></div>
+            <div class="how-step"><span class="step-badge">2</span><span>Yatırım talebi açılan ürününüze yatırımcılar ortak olur.</span></div>
+            <div class="how-step"><span class="step-badge">3</span><span>Satışlar gerçekleştikçe kâr payları otomatik hesaplanır.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,136 @@
+<div class="layout">
+  <app-navbar role="COMPANY" />
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size:16px;font-weight:600">Ürünlerim</h2>
+        <p style="font-size:12px;color:var(--gray-400)">Ürün ekle, düzenle ve yatırıma aç</p>
+      </div>
+      <button class="btn btn-primary btn-sm" (click)="openModal()">+ Yeni Ürün</button>
+    </div>
+    <div class="page-body">
+      @if (products.length === 0 && !loading) {
+        <div class="empty-state">
+          <div class="empty-icon">📦</div>
+          <h3>Henüz Ürün Yok</h3>
+          <p>İlk ürününüzü ekleyerek yatırımcılardan fon toplamaya başlayın.</p>
+          <button class="btn btn-primary" style="margin-top:16px" (click)="openModal()">+ İlk Ürünü Ekle</button>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ÜRÜN ADI</th>
+                <th>KATEGORİ</th>
+                <th>STOK</th>
+                <th>KÂR ORANI</th>
+                <th>HEDEF TUTAR</th>
+                <th>DOLULUK</th>
+                <th>DURUM</th>
+                <th>İŞLEM</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of products; track p.id) {
+                <tr>
+                  <td>
+                    <div style="font-weight:600;font-size:13px">{{ p.name }}</div>
+                    <div style="font-size:11px;color:var(--gray-400)">{{ p.createdAt | date:'dd.MM.yyyy' }}</div>
+                  </td>
+                  <td><span class="badge badge-info">{{ p.category }}</span></td>
+                  <td>{{ p.stockCount }} adet</td>
+                  <td><strong style="color:var(--success)">%{{ p.profitRate }}</strong></td>
+                  <td>{{ p.targetAmount | currency:'TRY':'symbol':'1.0-0':'tr' }}</td>
+                  <td>
+                    <div style="min-width:100px">
+                      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                        <span>{{ p.currentAmount | currency:'TRY':'symbol':'1.0-0':'tr' }}</span>
+                        <span>%{{ progress(p) }}</span>
+                      </div>
+                      <div class="progress-bar-wrap">
+                        <div class="progress-bar" [style.width.%]="progress(p)"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span [class]="'badge ' + statusBadge(p.status)">{{ statusLabel(p.status) }}</span></td>
+                  <td>
+                    <div style="display:flex;gap:6px">
+                      @if (p.status === 'PENDING') {
+                        <button class="btn btn-primary btn-sm" (click)="verify(p.id)" [disabled]="verifying===p.id">
+                          {{ verifying===p.id ? '...' : 'Doğrula' }}
+                        </button>
+                        <button class="btn btn-outline btn-sm" (click)="editProduct(p)">Düzenle</button>
+                      }
+                      @if (p.status === 'OPEN' || p.status === 'FUNDED') {
+                        <span style="font-size:12px;color:var(--gray-400)">Aktif</span>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editId ? 'Ürün Düzenle' : 'Yeni Ürün Ekle' }}</h2>
+        <p>Ürün bilgilerini girin, pazar yeri doğrulamasına gönderin</p>
+      </div>
+      @if (formError) { <div class="alert alert-error">{{ formError }}</div> }
+      <div class="form-group">
+        <label>Ürün Adı *</label>
+        <input [(ngModel)]="form.name" placeholder="Örn: Samsung Galaxy S24 Ultra" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Kategori *</label>
+          <select [(ngModel)]="form.category">
+            <option value="">Seçin</option>
+            @for (c of categories; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Stok Adedi *</label>
+          <input type="number" [(ngModel)]="form.stockCount" min="1" />
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Kâr Oranı (%) *</label>
+          <input type="number" [(ngModel)]="form.profitRate" step="0.5" min="1" max="100" />
+        </div>
+        <div class="form-group">
+          <label>Vade (gün) *</label>
+          <input type="number" [(ngModel)]="form.termDays" min="7" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Hedef Yatırım Tutarı (₺) *</label>
+        <input type="number" [(ngModel)]="form.targetAmount" min="1000" />
+      </div>
+      <div class="form-group">
+        <label>Satış Linki (Pazar Yeri)</label>
+        <input [(ngModel)]="form.salesLink" placeholder="https://trendyol.com/..." />
+      </div>
+      <div class="form-group">
+        <label>Pazar Yeri Ürün ID</label>
+        <input [(ngModel)]="form.marketplaceId" placeholder="Pazar yeri ürün kimliği" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeModal()">İptal</button>
+        <button class="btn btn-primary" (click)="saveProduct()" [disabled]="saving">
+          @if (saving) { <span class="spinner"></span> } {{ editId ? 'Güncelle' : 'Kaydet' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
