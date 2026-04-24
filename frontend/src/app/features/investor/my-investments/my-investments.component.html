@@ -17,7 +17,7 @@
       } @else {
         <div style="display:flex;flex-direction:column;gap:16px">
           @for (inv of investments; track inv.id) {
-            <div class="inv-card">
+            <div class="inv-card" [routerLink]="['/yatirimci/urun', inv.product?.id]" style="cursor:pointer">
               <div class="inv-card-left">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
                   <span class="badge badge-info">Nakit Yatırım</span>
@@ -44,7 +44,7 @@
                   </div>
                 }
                 @if (inv.status === 'CONFIRMED' && inv.product) {
-                  <button class="btn btn-outline btn-sm" style="margin-top:12px" (click)="openInvoice(inv)">
+                  <button class="btn btn-outline btn-sm" style="margin-top:12px" (click)="$event.stopPropagation(); openInvoice(inv)">
                     📄 E-Fatura Yükle
                   </button>
                 }

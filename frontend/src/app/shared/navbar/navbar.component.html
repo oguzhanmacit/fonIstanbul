@@ -3,14 +3,13 @@
     <div class="logo-icon">FI</div>
     <div class="logo-text">
       <span class="logo-title">FonIstanbul</span>
-      <span class="logo-sub">{{ roleLabel }}</span>
+      <span class="logo-sub">{{ roleLabel() }}</span>
     </div>
   </div>
 
   <nav class="sidebar-nav">
-    @for (item of navItems; track item.path) {
-      <a [routerLink]="item.path" routerLinkActive="active"
-        [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+    @for (item of navItems(); track item.path) {
+      <a [routerLink]="item.path" [class.active]="isActive(item.path)" class="nav-item">
         <span class="nav-icon">{{ item.icon }}</span>
         <span>{{ item.label }}</span>
       </a>
@@ -19,7 +18,7 @@
 
   <div class="sidebar-footer">
     <div class="user-info">
-      <div class="user-avatar">{{ userInitial }}</div>
+      <div class="user-avatar">{{ userInitial() }}</div>
       <div class="user-details">
         <div class="user-name">{{ auth.currentUser()?.name }}</div>
         <div class="user-email">{{ auth.currentUser()?.email }}</div>

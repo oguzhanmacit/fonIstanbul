@@ -33,6 +33,7 @@ export const routes: Routes = [
       { path: 'pazar', loadComponent: () => import('./features/investor/marketplace/marketplace.component').then(m => m.MarketplaceComponent) },
       { path: 'yatirimlarim', loadComponent: () => import('./features/investor/my-investments/my-investments.component').then(m => m.MyInvestmentsComponent) },
       { path: 'karlarim', loadComponent: () => import('./features/investor/profits/profits.component').then(m => m.ProfitsComponent) },
+      { path: 'urun/:id', loadComponent: () => import('./features/investor/product-detail/product-detail.component').then(m => m.ProductDetailComponent) },
     ],
   },
   {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Investment } from '../../../core/models/models';
@@ -11,7 +12,7 @@ const API = 'http://localhost:3000/api';
 @Component({
   selector: 'app-my-investments',
   standalone: true,
-  imports: [NavbarComponent, FormsModule, CurrencyPipe, DatePipe, DecimalPipe],
+  imports: [NavbarComponent, FormsModule, RouterLink, CurrencyPipe, DatePipe, DecimalPipe],
   templateUrl: './my-investments.component.html',
   styleUrls: ['./my-investments.component.css'],
 })

@@ -8,6 +8,7 @@ import {
   getMyProfits,
   uploadInvoice,
   getMyStats,
+  getProductDetail,
 } from '../controllers/investor.controller';
 
 const storage = multer.diskStorage({
@@ -33,5 +34,6 @@ router.post('/invest', invest);
 router.get('/investments', getMyInvestments);
 router.get('/profits', getMyProfits);
 router.post('/invoices', upload.single('invoice'), uploadInvoice);
+router.get('/products/:productId', getProductDetail);
 
 export default router;

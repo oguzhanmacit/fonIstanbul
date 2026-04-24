@@ -102,6 +102,36 @@ export async function getMyProfits(req: AuthRequest, res: Response): Promise<voi
   res.json(profits);
 }
 
+export async function getProductDetail(req: AuthRequest, res: Response): Promise<void> {
+  const { productId } = req.params;
+  const userId = req.user!.id;
+
+  const ownership = await prisma.ownership.findFirst({
+    where: { userId, productId },
+    include: { investment: { select: { amount: true, createdAt: true, status: true } } },
+  });
+
+  if (!ownership) {
+    res.status(403).json({ message: 'Bu ürüne yatırımınız bulunmuyor' });
+    return;
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    include: {
+      company: { select: { companyName: true } },
+      salesData: { orderBy: { recordedAt: 'desc' } },
+    },
+  });
+
+  const myProfits = await prisma.profitShare.findMany({
+    where: { userId, productId },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  res.json({ product, ownership, myProfits });
+}
+
 export async function uploadInvoice(req: AuthRequest, res: Response): Promise<void> {
   const { productId, invoiceNo } = req.body;
   const userId = req.user!.id;
